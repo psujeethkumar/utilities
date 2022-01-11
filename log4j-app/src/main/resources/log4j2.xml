@@ -1,18 +1,24 @@
-<Configuration monitorInterval="30" verbose="true">
-  <Appenders>
-    <Console name="STDOUT" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}{GMT+12} [%t] %-5level %logger{36} - %msg%n"/>
-      <!-- <JsonLayout complete="false" compact="true" eventEol="true" objectMessageAsJsonObject="false" properties="true" stacktraceAsString="true">
-        <KeyValuePair key="timestamp" value="$${date:yyyy-MM-dd'T'HH:mm:ss.SSSZ}"/>
-      </JsonLayout> -->
-    </Console>
-  </Appenders>
-
-  <Loggers>
-    <AsyncLogger name="io.osnz" level="DEBUG" />
-    <AsyncLogger name="org.springframework.boot" level="INFO" />
-    <AsyncRoot level="WARN">
-      <AppenderRef ref="STDOUT"/>
-    </AsyncRoot>
-  </Loggers>
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration strict="true" xmlns="http://logging.apache.org/log4j/2.0/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://logging.apache.org/log4j/2.0/config 
+           https://raw.githubusercontent.com/apache/logging-log4j2/master/log4j-core/src/main/resources/Log4j-config.xsd"
+	name="Log4jClient">
+	<Appenders>
+		<Routing name="Routing">
+			<Routes pattern="${main:fileName}">
+				<Route>
+					<RollingFile name="RollingFile" fileName="${main:fileDirectory}/${main:fileName}" filePattern="${main:fileDirectory}/${main:fileName}.%d{dd-MMM-hh-mm}.log.gz">
+						<Policies>
+							<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+						</Policies>
+					</RollingFile>
+				</Route>
+			</Routes>
+		</Routing>
+	</Appenders>
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Routing" />
+		</Root>
+	</Loggers>
 </Configuration>
